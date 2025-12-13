@@ -13,5 +13,5 @@
 - [期末專題提案](https://youtu.be/SbOCbR-17-o)
 - [期末專題報告](https://youtu.be/QwhSrcoYb5U)
 - [期末專題成果](https://youtu.be/01UPGxNDsk8)
-
+- [期末專題程式碼](https://github.com/chenkaiwen111811/PL-Repo/blob/main/%E6%9C%9F%E6%9C%AB%E5%B0%88%E9%A1%8C.ipynb)
 
