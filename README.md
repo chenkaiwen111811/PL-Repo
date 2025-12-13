@@ -11,5 +11,7 @@
 - [HW5](https://github.com/chenkaiwen111811/PL-Repo/blob/main/%E4%BD%9C%E6%A5%AD%E4%BA%94.ipynb)
 - [HW6](https://github.com/chenkaiwen111811/PL-Repo/blob/main/HW6.ipynb)
 - [期末專題提案](https://youtu.be/SbOCbR-17-o)
-  
+- [期末專題報告](https://youtu.be/QwhSrcoYb5U)
+- [期末專題成果](https://youtu.be/01UPGxNDsk8)
+
 
