@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>主題抽獎輪盤</title>
+    <style>
+        body { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; background: #f4f4f9; font-family: sans-serif; }
+        .wheel-container { position: relative; width: 300px; height: 300px; }
+        #wheel { width: 100%; height: 100%; border-radius: 50%; border: 5px solid #333; transition: transform 4s cubic-bezier(0.15, 0, 0.15, 1); overflow: hidden; position: relative; }
+        .pointer { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 30px solid red; z-index: 10; }
+        .btn { margin-top: 30px; padding: 10px 30px; font-size: 18px; cursor: pointer; background: #333; color: white; border: none; border-radius: 5px; }
+        .btn:disabled { background: #ccc; }
+        #result { margin-top: 20px; font-weight: bold; font-size: 20px; color: #333; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+
+    <div class="wheel-container">
+        <div class="pointer"></div>
+        <canvas id="wheel" width="300" height="300"></canvas>
+    </div>
+    
+    <button class="btn" onclick="spinWheel()" id="spin-button">開始抽獎</button>
+    <div id="result">快來試試好運！</div>
+
+    <script>
+        const canvas = document.getElementById('wheel');
+        const ctx = canvas.getContext('2d');
+        const resultText = document.getElementById('result');
+        const spinButton = document.getElementById('spin-button');
+
+        const prizes = [
+            { name: "折六十七元", weight: 0.00001, color: "#FFD700" },
+            { name: "折十元", weight: 0.1, color: "#FF6384" },
+            { name: "折五元", weight: 1.0, color: "#36A2EB" },
+            { name: "star徽章", weight: 16.48333, color: "#FFCE56" },
+            { name: "歐趴徽章", weight: 16.48333, color: "#4BC0C0" },
+            { name: "理性飲酒徽章", weight: 16.48333, color: "#9966FF" },
+            { name: "西瓜徽章", weight: 16.48333, color: "#FF9F40" },
+            { name: "獅子吊飾", weight: 16.48333, color: "#8BC34A" },
+            { name: "杯墊", weight: 16.48333, color: "#E91E63" }
+        ];
+
+        const numPrizes = prizes.length;
+        const arc = Math.PI * 2 / numPrizes;
+        let currentRotation = 0;
+
+        // 畫出等分的輪盤視覺
+        function drawWheel() {
+            prizes.forEach((prize, i) => {
+                const angle = i * arc;
+                ctx.beginPath();
+                ctx.fillStyle = prize.color;
+                ctx.moveTo(150, 150);
+                ctx.arc(150, 150, 150, angle, angle + arc);
+                ctx.lineTo(150, 150);
+                ctx.fill();
+                ctx.stroke();
+
+                // 畫文字
+                ctx.save();
+                ctx.translate(150, 150);
+                ctx.rotate(angle + arc / 2);
+                ctx.textAlign = "right";
+                ctx.fillStyle = "#333";
+                ctx.font = "bold 14px Arial";
+                ctx.fillText(prize.name, 140, 5);
+                ctx.restore();
+            });
+        }
+
+        function spinWheel() {
+            spinButton.disabled = true;
+            resultText.innerText = "旋轉中...";
+
+            // 1. 根據機率計算結果 (權重邏輯)
+            const random = Math.random() * 100;
+            let cumulativeWeight = 0;
+            let winIndex = 0;
+
+            for (let i = 0; i < prizes.length; i++) {
+                cumulativeWeight += prizes[i].weight;
+                if (random < cumulativeWeight) {
+                    winIndex = i;
+                    break;
+                }
+            }
+
+            // 2. 計算旋轉角度
+            // 轉盤目前的旋轉是順時針，指針在上方 (270度位置)
+            // 需要算出讓 winIndex 停在頂部所需的旋轉量
+            const extraRounds = 5 + Math.floor(Math.random() * 5); // 隨機轉 5~10 圈
+            const prizeCenterAngle = (winIndex * (360 / numPrizes)) + (360 / numPrizes / 2);
+            
+            // 最終停止角度計算（考慮 Canvas 繪圖起始點與指針位置的偏移）
+            const stopAngle = 360 * extraRounds - prizeCenterAngle + 270;
+            
+            currentRotation += stopAngle;
+            canvas.style.transform = `rotate(${currentRotation}deg)`;
+
+            // 3. 動畫結束後顯示結果
+            setTimeout(() => {
+                resultText.innerText = `恭喜獲得：${prizes[winIndex].name}！`;
+                spinButton.disabled = false;
+            }, 4000);
+        }
+
+        drawWheel();
+    </script>
+</body>
+</html>
